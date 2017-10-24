@@ -30,4 +30,26 @@ public class BoardResource {
         return Response.status(201).build();
     }
 
+    @PUT
+    @Path("board")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateBoard(Board board) {
+        if (BoardRepository.getInstance().existItem(board.getId())) {
+            BoardRepository.getInstance().updateBoard(board);
+        } else {
+            BoardRepository.getInstance().createBoard(board);
+        }
+        return Response.status(201).build();
+    }
+
+    @DELETE
+    @Path("board/{id}")
+    public void removeBoard(@PathParam("id") Long id) {
+        if (BoardRepository.getInstance().existItem(id)) {
+            BoardRepository.getInstance().removeBoard(id);
+        } else {
+            //throw some exception || return http status
+        }
+    }
+
 }

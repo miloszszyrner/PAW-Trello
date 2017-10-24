@@ -49,9 +49,10 @@ public class BoardRepository {
     }
     public Board getBoard(Long id) {
         Board board = new Board();
-        String queryString = "SELECT * FROM BOARD WHERE id =" + id;
+        String queryString = "SELECT * FROM BOARD WHERE ID = ?";
         try {
-            Statement statement = connection.createStatement();
+            PreparedStatement statement = connection.prepareStatement(queryString);
+            statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while(resultSet.next()) {
@@ -75,4 +76,39 @@ public class BoardRepository {
         }
     }
 
+    public void updateBoard(Board board) {
+        String queryString = "UPDATE BOARD SET NAME = ? WHERE ID = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(queryString);
+            statement.setString(1,board.getName());
+            statement.setLong(2,board.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean existItem(Long id) {
+        String queryString = "SELECT * FROM BOARD WHERE ID = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(queryString);
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void removeBoard(Long id) {
+        String queryString = "DELETE FROM BOARD WHERE ID = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(queryString);
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -7,7 +7,6 @@ public class Board {
     private String name;
 
     public Board(Long id, String name) {
-
         this.id = id;
         this.name = name;
     }
