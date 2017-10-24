@@ -30,14 +30,14 @@ public class BoardRepository {
         }
     }
 
-    public List<Board> getBoards() {
-        List<Board> boards = new ArrayList<>();
+    public List<BoardData> getBoards() {
+        List<BoardData> boards = new ArrayList<>();
         String queryString = "SELECT * FROM BOARD";
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(queryString);
             while(resultSet.next()) {
-                Board board = new Board();
+                BoardData board = new BoardData();
                 board.setId(resultSet.getLong(1));
                 board.setName(resultSet.getString(2));
                 boards.add(board);
@@ -47,8 +47,8 @@ public class BoardRepository {
         }
         return boards;
     }
-    public Board getBoard(Long id) {
-        Board board = new Board();
+    public BoardData getBoard(Long id) {
+        BoardData board = new BoardData();
         String queryString = "SELECT * FROM BOARD WHERE ID = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(queryString);
@@ -65,7 +65,7 @@ public class BoardRepository {
         return board;
     }
 
-    public void createBoard(Board board) {
+    public void createBoard(BoardData board) {
         String queryString = "INSERT INTO BOARD (NAME) values (?)";
         try {
             PreparedStatement statement = connection.prepareStatement(queryString);
@@ -76,7 +76,7 @@ public class BoardRepository {
         }
     }
 
-    public void updateBoard(Board board) {
+    public void updateBoard(BoardData board) {
         String queryString = "UPDATE BOARD SET NAME = ? WHERE ID = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(queryString);

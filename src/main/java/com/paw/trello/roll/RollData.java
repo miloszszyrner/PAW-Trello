@@ -1,17 +1,21 @@
-package com.paw.trello.board;
+package com.paw.trello.roll;
 
-public class Board {
+public class RollData {
 
     private Long id;
 
     private String name;
 
-    public Board(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    private Long boardId;
+
+    public RollData() {
     }
 
-    public Board() {}
+    public RollData(Long id, String name, Long boardId) {
+        this.id = id;
+        this.name = name;
+        this.boardId = boardId;
+    }
 
     public Long getId() {
         return id;
@@ -27,5 +31,13 @@ public class Board {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getBoardId() {
+        return boardId;
+    }
+
+    public void setBoardId(Long boardId) {
+        this.boardId = boardId;
     }
 }

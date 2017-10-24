@@ -11,21 +11,21 @@ public class BoardResource {
     @GET
     @Path("/all")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<Board> getBoards() {
+    public List<BoardData> getBoards() {
         return BoardRepository.getInstance().getBoards();
     }
 
     @GET
     @Path("board/{id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Board getBoard(@PathParam("id") Long id) {
+    public BoardData getBoard(@PathParam("id") Long id) {
         return BoardRepository.getInstance().getBoard(id);
     }
 
     @POST
     @Path("board")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createBoard(Board board) {
+    public Response createBoard(BoardData board) {
         BoardRepository.getInstance().createBoard(board);
         return Response.status(201).build();
     }
@@ -33,7 +33,7 @@ public class BoardResource {
     @PUT
     @Path("board")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateBoard(Board board) {
+    public Response updateBoard(BoardData board) {
         if (BoardRepository.getInstance().existItem(board.getId())) {
             BoardRepository.getInstance().updateBoard(board);
         } else {
