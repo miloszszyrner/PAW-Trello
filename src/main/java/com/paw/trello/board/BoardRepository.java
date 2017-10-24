@@ -1,10 +1,12 @@
 package com.paw.trello.board;
 
+import com.paw.trello.repositories.AbstractRepository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardRepository {
+public class BoardRepository extends AbstractRepository<BoardData>{
 
     private static class LazyHolder {
         static final BoardRepository INSTANCE = new BoardRepository();
@@ -14,23 +16,12 @@ public class BoardRepository {
         return LazyHolder.INSTANCE;
     }
 
-    Connection connection = null;
-
     public BoardRepository() {
-        String url = "jdbc:mysql://mysql8.db4free.net:3307/paw_trello";
-        String username = "miloszszyrner";
-        String password = "zawszespoko1";
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(url,username,password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        super();
     }
 
-    public List<BoardData> getBoards() {
+    @Override
+    public List<BoardData> getItems() {
         List<BoardData> boards = new ArrayList<>();
         String queryString = "SELECT * FROM BOARD";
         try {
@@ -47,7 +38,9 @@ public class BoardRepository {
         }
         return boards;
     }
-    public BoardData getBoard(Long id) {
+
+    @Override
+    public BoardData getItem(Long id) {
         BoardData board = new BoardData();
         String queryString = "SELECT * FROM BOARD WHERE ID = ?";
         try {
@@ -65,47 +58,25 @@ public class BoardRepository {
         return board;
     }
 
-    public void createBoard(BoardData board) {
+    @Override
+    public void createItem(BoardData item) {
         String queryString = "INSERT INTO BOARD (NAME) values (?)";
         try {
             PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setString(1, board.getName());
+            statement.setString(1, item.getName());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateBoard(BoardData board) {
+    @Override
+    public void updateItem(BoardData item) {
         String queryString = "UPDATE BOARD SET NAME = ? WHERE ID = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setString(1,board.getName());
-            statement.setLong(2,board.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    public boolean existItem(Long id) {
-        String queryString = "SELECT * FROM BOARD WHERE ID = ?";
-        try {
-            PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    public void removeBoard(Long id) {
-        String queryString = "DELETE FROM BOARD WHERE ID = ?";
-        try {
-            PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setLong(1, id);
+            statement.setString(1,item.getName());
+            statement.setLong(2,item.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

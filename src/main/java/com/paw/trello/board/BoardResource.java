@@ -12,21 +12,21 @@ public class BoardResource {
     @Path("/all")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public List<BoardData> getBoards() {
-        return BoardRepository.getInstance().getBoards();
+        return BoardRepository.getInstance().getItems();
     }
 
     @GET
     @Path("board/{id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public BoardData getBoard(@PathParam("id") Long id) {
-        return BoardRepository.getInstance().getBoard(id);
+        return BoardRepository.getInstance().getItem(id);
     }
 
     @POST
     @Path("board")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBoard(BoardData board) {
-        BoardRepository.getInstance().createBoard(board);
+        BoardRepository.getInstance().createItem(board);
         return Response.status(201).build();
     }
 
@@ -34,10 +34,10 @@ public class BoardResource {
     @Path("board")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateBoard(BoardData board) {
-        if (BoardRepository.getInstance().existItem(board.getId())) {
-            BoardRepository.getInstance().updateBoard(board);
+        if (BoardRepository.getInstance().existItem(board.getId(), "BOARD")) {
+            BoardRepository.getInstance().updateItem(board);
         } else {
-            BoardRepository.getInstance().createBoard(board);
+            BoardRepository.getInstance().createItem(board);
         }
         return Response.status(201).build();
     }
@@ -45,8 +45,8 @@ public class BoardResource {
     @DELETE
     @Path("board/{id}")
     public void removeBoard(@PathParam("id") Long id) {
-        if (BoardRepository.getInstance().existItem(id)) {
-            BoardRepository.getInstance().removeBoard(id);
+        if (BoardRepository.getInstance().existItem(id, "BOARD")) {
+            BoardRepository.getInstance().removeItem(id, "BOARD");
         } else {
             //throw some exception || return http status
         }
