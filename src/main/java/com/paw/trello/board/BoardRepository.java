@@ -46,8 +46,7 @@ public class BoardRepository extends AbstractRepository<BoardData>{
         try {
             PreparedStatement statement = connection.prepareStatement(queryString);
             statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery(queryString);
-
+            ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()) {
                 board.setId(resultSet.getLong(1));
                 board.setName(resultSet.getString(2));
