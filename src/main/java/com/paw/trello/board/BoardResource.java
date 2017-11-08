@@ -1,5 +1,7 @@
 package com.paw.trello.board;
 
+import com.paw.trello.card.CardData;
+import com.paw.trello.card.CardRepository;
 import com.paw.trello.roll.RollData;
 import com.paw.trello.roll.RollRepository;
 
@@ -72,7 +74,7 @@ public class BoardResource {
     @POST
     @Path("/{bId}/rolls")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createBoard(@PathParam("bId") Long bId, RollData roll) throws SQLException, NamingException {
+    public Response createrRoll(@PathParam("bId") Long bId, RollData roll) throws SQLException, NamingException {
         roll.setBoardId(bId);
         RollRepository.getInstance().createItem(roll);
         return Response.status(201).build();
@@ -81,7 +83,7 @@ public class BoardResource {
     @PUT
     @Path("/{bId}/rolls/{rId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateBoard(@PathParam("bId") Long bId, @PathParam("rId") Long rId, RollData roll) throws NamingException, SQLException {
+    public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, RollData roll) throws NamingException, SQLException {
         if (RollRepository.getInstance().existItem(bId, rId)) {
             RollRepository.getInstance().updateItem(roll, rId);
         } else {
@@ -92,11 +94,57 @@ public class BoardResource {
 
     @DELETE
     @Path("/{bId}/rolls/{rId}")
-    public void removeBoard(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws NamingException, SQLException {
+    public void removeRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws NamingException, SQLException {
         if (RollRepository.getInstance().existItem(bId, rId)) {
             RollRepository.getInstance().removeItem(rId);
         } else {
             //throw some exception || return http status
         }
     }
+
+    @GET
+    @Path("/{bId}/rolls/{rId}/cards")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<CardData> getCards(@PathParam("rId") Long rId) throws SQLException, NamingException {
+        return CardRepository.getInstance().getItems(rId);
+    }
+
+    @GET
+    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public CardData getCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws SQLException, NamingException {
+        return CardRepository.getInstance().getItem(rId, cId).get(0);
+    }
+
+    @POST
+    @Path("/{bId}/rolls/{rId}/cards")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createrCard(@PathParam("rId") Long rId, CardData card) throws SQLException, NamingException {
+        card.setRollId(rId);
+        CardRepository.getInstance().createItem(card);
+        return Response.status(201).build();
+    }
+
+    @PUT
+    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId, CardData card) throws NamingException, SQLException {
+        if (CardRepository.getInstance().existItem(rId, cId)) {
+            CardRepository.getInstance().updateItem(card, cId);
+        } else {
+            CardRepository.getInstance().createItem(card);
+        }
+        return Response.status(201).build();
+    }
+
+    @DELETE
+    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    public void removeCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws NamingException, SQLException {
+        if (CardRepository.getInstance().existItem(rId, cId)) {
+            CardRepository.getInstance().removeItem(cId);
+        } else {
+            //throw some exception || return http status
+        }
+    }
+
 }
