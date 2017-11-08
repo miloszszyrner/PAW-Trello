@@ -17,8 +17,8 @@ public class CardData {
     @Column(name = "ROLL_ID", nullable = false)
     private Long rollId;
 
-    @Column(name = "DESCRIPTION_ID")
-    private Long descriptionId;
+    @Column(name = "DESCRIPTION")
+    private String description;
 
     public CardData() {
     }
@@ -47,11 +47,11 @@ public class CardData {
         this.rollId = rollId;
     }
 
-    public Long getDescriptionId() {
-        return descriptionId;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptionId(Long descriptionId) {
-        this.descriptionId = descriptionId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
