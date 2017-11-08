@@ -1,11 +1,20 @@
 package com.paw.trello.roll;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "ROLL")
 public class RollData {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", nullable = false, insertable = false)
     private Long id;
 
+    @Column(name = "NAME")
     private String name;
 
+    @Column(name = "BOARD_ID")
     private Long boardId;
 
     public RollData() {

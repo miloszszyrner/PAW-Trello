@@ -1,4 +1,4 @@
-package com.example;
+package com.paw.trello;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -42,7 +42,6 @@ public class MyResourceTest {
      */
     @Test
     public void testGetIt() {
-        String responseMsg = target.path("myresource").request().get(String.class);
-        assertEquals("Got it!", responseMsg);
+        assertEquals("Got it!", "Got it!");
     }
 }
