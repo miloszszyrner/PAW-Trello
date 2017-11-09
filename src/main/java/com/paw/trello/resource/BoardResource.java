@@ -1,5 +1,7 @@
-package com.paw.trello.board;
+package com.paw.trello.resource;
 
+import com.paw.trello.board.BoardData;
+import com.paw.trello.board.BoardRepository;
 import com.paw.trello.card.CardData;
 import com.paw.trello.card.CardRepository;
 import com.paw.trello.roll.RollData;
