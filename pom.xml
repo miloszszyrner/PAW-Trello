@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.paw.trello</groupId>
-    <artifactId>simple-service</artifactId>
+    <artifactId>Trello</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>simple-service</name>
+    <name>Trello</name>
 
     <properties>
         <jersey.version>2.5.1</jersey.version>
@@ -99,6 +99,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>Trello</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -109,6 +110,22 @@
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>compile</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
