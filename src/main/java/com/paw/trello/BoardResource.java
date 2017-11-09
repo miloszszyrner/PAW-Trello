@@ -1,4 +1,4 @@
-package com.paw.trello.resource;
+package com.paw.trello;
 
 import com.paw.trello.board.BoardData;
 import com.paw.trello.board.BoardRepository;
