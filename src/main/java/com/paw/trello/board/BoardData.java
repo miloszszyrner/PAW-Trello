@@ -1,6 +1,5 @@
 package com.paw.trello.board;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.paw.trello.roll.LaneData;
 
 import javax.persistence.*;
