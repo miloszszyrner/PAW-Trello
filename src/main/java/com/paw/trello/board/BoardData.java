@@ -14,12 +14,17 @@ public class BoardData {
     @Column(name = "ID", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "NAME")
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "BOARD_ID", referencedColumnName = "ID")
     List<RollData> rolls;
+
+    public BoardData(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public BoardData() {}
 
