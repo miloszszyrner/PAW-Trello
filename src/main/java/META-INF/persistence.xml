@@ -4,7 +4,7 @@
     <persistence-unit name="Tix" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.paw.trello.board.BoardData</class>
-        <class>com.paw.trello.roll.RollData</class>
+        <class>com.paw.trello.roll.LaneData</class>
         <class>com.paw.trello.card.CardData</class>
         <properties>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>

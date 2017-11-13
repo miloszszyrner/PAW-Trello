@@ -17,6 +17,9 @@ public class CardData {
     @Column(name = "ROLL_ID", nullable = false)
     private Long rollId;
 
+    @Column(name ="LABEL")
+    private String label;
+
     @Column(name = "DESCRIPTION")
     private String description;
 
@@ -45,6 +48,14 @@ public class CardData {
 
     public void setRollId(Long rollId) {
         this.rollId = rollId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getDescription() {

@@ -8,14 +8,14 @@ import javax.persistence.TypedQuery;
 import java.sql.SQLException;
 import java.util.List;
 
-public class RollRepository {
+public class LaneRepository {
 
     private static class LazyHolder {
 
-        static final RollRepository INSTANCE = new RollRepository();
+        static final LaneRepository INSTANCE = new LaneRepository();
 
     }
-    public static RollRepository getInstance() {
+    public static LaneRepository getInstance() {
         return LazyHolder.INSTANCE;
     }
     private static EntityManager getEntityManager() throws NamingException {
@@ -28,29 +28,29 @@ public class RollRepository {
         return emf.createEntityManager();
     }
 
-    public RollRepository() {
+    public LaneRepository() {
         super();
     }
 
     private EntityManager em;
 
-    private List<RollData> listOfRolls;
+    private List<LaneData> listOfRolls;
 
 
-    public List<RollData> getItems(Long boardId) throws SQLException, NamingException {
+    public List<LaneData> getItems(Long boardId) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<RollData> query = em.createQuery("SELECT data FROM RollData data WHERE data.boardId = :boardId", RollData.class);
+        TypedQuery<LaneData> query = em.createQuery("SELECT data FROM LaneData data WHERE data.boardId = :boardId", LaneData.class);
         listOfRolls = query.setParameter("boardId", boardId).getResultList();
         em.getTransaction().commit();
         em.close();
         return listOfRolls;
     }
 
-    public List<RollData> getItem(Long boardId, Long rollId) throws NamingException {
+    public List<LaneData> getItem(Long boardId, Long rollId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<RollData> query = em.createQuery("SELECT data FROM RollData data WHERE data.boardId = :boardId AND data.id = :rollId", RollData.class);
+        TypedQuery<LaneData> query = em.createQuery("SELECT data FROM LaneData data WHERE data.boardId = :boardId AND data.id = :rollId", LaneData.class);
         query.setParameter("rollId", rollId);
         query.setParameter("boardId", boardId);
         listOfRolls = query.getResultList();
@@ -59,7 +59,7 @@ public class RollRepository {
         return listOfRolls;
     }
 
-    public void createItem(RollData data) throws SQLException, NamingException {
+    public void createItem(LaneData data) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
         em.persist(data);
@@ -68,21 +68,21 @@ public class RollRepository {
     }
 
     public void removeItem(Long id) throws SQLException, NamingException {
-        RollData rollData = new RollData();
+        LaneData laneData = new LaneData();
         em = getEntityManager();
         em.getTransaction().begin();
-        rollData = em.find(RollData.class, id);
-        em.remove(rollData);
+        laneData = em.find(LaneData.class, id);
+        em.remove(laneData);
         em.getTransaction().commit();
         em.close();
     }
 
-    public void updateItem(RollData data, Long id) throws SQLException, NamingException {
+    public void updateItem(LaneData data, Long id) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        RollData rollData = em.find(RollData.class, id);
-        rollData.setName(data.getName());
-        em.persist(rollData);
+        LaneData laneData = em.find(LaneData.class, id);
+        laneData.setTitle(data.getTitle());
+        em.persist(laneData);
         em.getTransaction().commit();
         em.close();
     }

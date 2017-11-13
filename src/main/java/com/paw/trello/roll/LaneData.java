@@ -6,16 +6,19 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "ROLL")
-public class RollData {
+@Table(name = "LANE")
+public class LaneData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false, insertable = false)
     private Long id;
 
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "TITLE")
+    private String title;
+
+    @Column(name = "LABEL")
+    private String label;
 
     @Column(name = "BOARD_ID")
     private Long boardId;
@@ -24,13 +27,14 @@ public class RollData {
     @JoinColumn(name = "ROLL_ID", referencedColumnName = "ID")
     List<CardData> cards;
 
-    public RollData() {
+    public LaneData() {
     }
 
-    public RollData(Long id, String name, Long boardId) {
+    public LaneData(Long id, String title, Long boardId, String label) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.boardId = boardId;
+        this.label = label;
     }
 
     public Long getId() {
@@ -41,12 +45,12 @@ public class RollData {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
     public Long getBoardId() {
@@ -63,5 +67,13 @@ public class RollData {
 
     public void setCards(List<CardData> cards) {
         this.cards = cards;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

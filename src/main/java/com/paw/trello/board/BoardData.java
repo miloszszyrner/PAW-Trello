@@ -1,6 +1,7 @@
 package com.paw.trello.board;
 
-import com.paw.trello.roll.RollData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.paw.trello.roll.LaneData;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +20,7 @@ public class BoardData {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "BOARD_ID", referencedColumnName = "ID")
-    List<RollData> rolls;
+    List<LaneData> lanes;
 
     public BoardData() {}
 
@@ -39,11 +40,11 @@ public class BoardData {
         this.name = name;
     }
 
-    public List<com.paw.trello.roll.RollData> getRolls() {
-        return rolls;
+    public List<LaneData> getLanes() {
+        return lanes;
     }
 
-    public void setRolls(List<com.paw.trello.roll.RollData> rolls) {
-        this.rolls = rolls;
+    public void setLanes(List<LaneData> lanes) {
+        this.lanes = lanes;
     }
 }

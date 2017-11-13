@@ -2,8 +2,8 @@ package com.paw.trello.board;
 
 import com.paw.trello.card.CardData;
 import com.paw.trello.card.CardRepository;
-import com.paw.trello.roll.RollData;
-import com.paw.trello.roll.RollRepository;
+import com.paw.trello.roll.LaneData;
+import com.paw.trello.roll.LaneRepository;
 
 import javax.naming.NamingException;
 import javax.ws.rs.*;
@@ -24,8 +24,8 @@ public class BoardResource {
     @GET
     @Path("/{bId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public BoardData getBoard(@PathParam("bId") Long bId) throws NamingException {
-        return BoardRepository.getInstance().getItem(bId).get(0);
+    public Response getBoard(@PathParam("bId") Long bId) throws NamingException {
+        return Response.accepted().entity(BoardRepository.getInstance().getItem(bId).get(0)).build();
     }
 
     @POST
@@ -60,34 +60,34 @@ public class BoardResource {
     @GET
     @Path("/{bId}/rolls")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<RollData> getRolls(@PathParam("bId") Long bId) throws SQLException, NamingException {
-        return RollRepository.getInstance().getItems(bId);
+    public List<LaneData> getRolls(@PathParam("bId") Long bId) throws SQLException, NamingException {
+        return LaneRepository.getInstance().getItems(bId);
     }
 
     @GET
     @Path("/{bId}/rolls/{rId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public RollData getRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws SQLException, NamingException {
-        return RollRepository.getInstance().getItem(bId, rId).get(0);
+    public LaneData getRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws SQLException, NamingException {
+        return LaneRepository.getInstance().getItem(bId, rId).get(0);
     }
 
     @POST
     @Path("/{bId}/rolls")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createrRoll(@PathParam("bId") Long bId, RollData roll) throws SQLException, NamingException {
+    public Response createrRoll(@PathParam("bId") Long bId, LaneData roll) throws SQLException, NamingException {
         roll.setBoardId(bId);
-        RollRepository.getInstance().createItem(roll);
+        LaneRepository.getInstance().createItem(roll);
         return Response.status(201).build();
     }
 
     @PUT
     @Path("/{bId}/rolls/{rId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, RollData roll) throws NamingException, SQLException {
-        if (RollRepository.getInstance().existItem(bId, rId)) {
-            RollRepository.getInstance().updateItem(roll, rId);
+    public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, LaneData roll) throws NamingException, SQLException {
+        if (LaneRepository.getInstance().existItem(bId, rId)) {
+            LaneRepository.getInstance().updateItem(roll, rId);
         } else {
-            RollRepository.getInstance().createItem(roll);
+            LaneRepository.getInstance().createItem(roll);
         }
         return Response.status(201).build();
     }
@@ -95,8 +95,8 @@ public class BoardResource {
     @DELETE
     @Path("/{bId}/rolls/{rId}")
     public void removeRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws NamingException, SQLException {
-        if (RollRepository.getInstance().existItem(bId, rId)) {
-            RollRepository.getInstance().removeItem(rId);
+        if (LaneRepository.getInstance().existItem(bId, rId)) {
+            LaneRepository.getInstance().removeItem(rId);
         } else {
             //throw some exception || return http status
         }

@@ -1,0 +1,4 @@
+ALTER TABLE CARD
+ADD LABEL varchar(50);
+
+COMMIT;
