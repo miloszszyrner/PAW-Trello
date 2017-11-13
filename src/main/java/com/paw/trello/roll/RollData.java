@@ -10,7 +10,7 @@ import java.util.List;
 public class RollData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false, insertable = false)
     private Long id;
 
