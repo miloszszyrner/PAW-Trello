@@ -10,7 +10,7 @@
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="miloszszyrner"/>
             <property name="hibernate.connection.password" value="zawszespoko1"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://mysql8.db4free.net:3307/paw_trello"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://mysql8.db4free.net:3307/paw_trello?useSSL=true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.archive.autodetection" value="class"/>

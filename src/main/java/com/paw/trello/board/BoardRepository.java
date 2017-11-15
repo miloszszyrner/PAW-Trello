@@ -4,6 +4,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -96,20 +97,24 @@ public class BoardRepository {
     }*/
     private EntityManager em;
     private List<BoardData> listOfBoards;
-    public List<BoardData> getItems() throws NamingException {
+    public List<BoardData> getItems(Long userId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        listOfBoards = em.createQuery("SELECT data FROM BoardData data").getResultList();
+        TypedQuery<BoardData> query = em.createQuery("SELECT data FROM BoardData data where data.userId = :userId", BoardData.class);
+        query.setParameter("userId", userId);
+        listOfBoards = query.getResultList();
         em.getTransaction().commit();
         em.close();
         return listOfBoards;
     }
 
-    public List<BoardData> getItem(Long id) throws NamingException {
+    public List<BoardData> getItem(Long userId, Long id) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        listOfBoards = singletonList(em.find(BoardData.class, id));
-        em.getTransaction().commit();
+        TypedQuery<BoardData> query = em.createQuery("SELECT data FROM BoardData data where data.userId = :userId and data.id = :id", BoardData.class);
+        query.setParameter("userId", userId);
+        query.setParameter("id", id);
+        listOfBoards = query.getResultList();
         em.close();
         return listOfBoards;
     }
@@ -142,8 +147,8 @@ public class BoardRepository {
         em.close();
     }
 
-    public boolean existItem(Long bId) throws NamingException {
-        if(getItem(bId) == null || getItem(bId).isEmpty()){
+    public boolean existItem(Long userId, Long bId) throws NamingException {
+        if(getItem(userId, bId) == null || getItem(userId, bId).isEmpty()){
             return false;
         }
         return true;

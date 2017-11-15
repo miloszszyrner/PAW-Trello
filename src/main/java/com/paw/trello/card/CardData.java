@@ -1,6 +1,7 @@
 package com.paw.trello.card;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "CARD")
@@ -12,6 +13,7 @@ public class CardData {
     private Long id;
 
     @Column(name = "TITLE", nullable = false)
+    @NotNull(message = "Card :title cannot be empty")
     private String title;
 
     @Column(name = "ROLL_ID", nullable = false)

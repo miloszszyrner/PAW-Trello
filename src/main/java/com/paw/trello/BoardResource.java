@@ -1,5 +1,8 @@
 package com.paw.trello;
 
+import com.paw.trello.User.UserData;
+import com.paw.trello.User.UserRepository;
+import com.paw.trello.annotations.*;
 import com.paw.trello.board.BoardData;
 import com.paw.trello.board.BoardRepository;
 import com.paw.trello.card.CardData;
@@ -8,144 +11,189 @@ import com.paw.trello.roll.LaneData;
 import com.paw.trello.roll.LaneRepository;
 
 import javax.naming.NamingException;
+import javax.validation.Valid;
+import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/boards")
+@Path("/")
 public class BoardResource {
 
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<BoardData> getBoards() throws SQLException, NamingException {
-        return BoardRepository.getInstance().getItems();
-    }
-
-    @GET
-    @Path("/{bId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getBoard(@PathParam("bId") Long bId) throws NamingException {
-        return Response.accepted().entity(BoardRepository.getInstance().getItem(bId).get(0)).build();
+    @POST
+    @Path("registraton")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerUser(@Valid @ValidUser UserData user) throws ValidationException,SQLException, NamingException {
+        UserRepository.getInstance().createItem(user);
+        return Response.status(Response.Status.CREATED).entity("The user has benn successfully cretead").build();
     }
 
     @POST
+    @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createBoard(BoardData board) throws SQLException, NamingException {
+    public Response loginUser(@Valid @ValidLoggingUser UserData user) throws ValidationException,SQLException, NamingException {
+        UserData loggedUser = UserRepository.getInstance().getByUsername(user.getUsername()).get(0);
+        if(loggedUser == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("User not exist in database").build();
+        }
+        if (loggedUser.getPassword().equals(user.getPassword()))
+            return Response.status(Response.Status.OK).entity(loggedUser).build();
+        return Response.status(Response.Status.FORBIDDEN).entity("Wrong password").build();
+    }
+    @GET
+    @Path("{id}/boards")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<BoardData> getBoards(@PathParam("id") Long userId) throws SQLException, NamingException {
+        return BoardRepository.getInstance().getItems(userId);
+    }
+
+    @GET
+    @Path("{id}boards/{bId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId) throws NamingException {
+        BoardData boardById = BoardRepository.getInstance().getItem(userId,bId).get(0);
+        return Response.status(Response.Status.OK).entity(boardById).build();
+    }
+
+    @POST
+    @Path("{id}/boards")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public Response createBoard(@PathParam("id") Long userId, @Valid @ValidBoard BoardData board) throws SQLException, NamingException {
+        board.setUserId(userId);
         BoardRepository.getInstance().createItem(board);
-        return Response.status(201).build();
+        return Response.status(Response.Status.CREATED).entity("The board has benn successfully cretead").build();
     }
 
     @PUT
-    @Path("/{bId}")
+    @Path("{id}/boards/{bId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateBoard(@PathParam("bId") Long bId, BoardData board) throws SQLException, NamingException {
-        if (BoardRepository.getInstance().existItem(board.getId())) {
+    @Produces(MediaType.TEXT_HTML)
+    public Response updateBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId, BoardData board) throws SQLException, NamingException {
+        if (BoardRepository.getInstance().existItem(userId, bId)) {
+            board.setUserId(userId);
             BoardRepository.getInstance().updateItem(board, bId);
+            return Response.status(Response.Status.OK).entity("The board has been fully updated").build();
         } else {
             BoardRepository.getInstance().createItem(board);
+            return Response.status(Response.Status.CREATED).entity("The board has benn successfully cretead").build();
         }
-        return Response.status(201).build();
+
     }
 
     @DELETE
-    @Path("/{bId}")
-    public void removeBoard(@PathParam("bId") Long bId) throws NamingException, SQLException {
-        if (BoardRepository.getInstance().existItem(bId)) {
+    @Path("{id}/boards/{bId}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response removeBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId) throws NamingException, SQLException {
+        if (BoardRepository.getInstance().existItem(userId, bId)) {
             BoardRepository.getInstance().removeItem(bId);
+            return Response.status(Response.Status.NO_CONTENT).entity("Board has been successfully removed").build();
         } else {
-            //throw some exception || return http status
+            return Response.status(Response.Status.NOT_FOUND).entity("Board not exist in database").build();
         }
     }
 
     @GET
-    @Path("/{bId}/rolls")
+    @Path("{id}/boards/{bId}/rolls")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<LaneData> getRolls(@PathParam("bId") Long bId) throws SQLException, NamingException {
         return LaneRepository.getInstance().getItems(bId);
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}")
+    @Path("{id}/boards/{bId}/rolls/{rId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public LaneData getRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws SQLException, NamingException {
-        return LaneRepository.getInstance().getItem(bId, rId).get(0);
+    public Response getRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws SQLException, NamingException {
+        LaneData laneById = LaneRepository.getInstance().getItem(bId, rId).get(0);
+        return Response.status(Response.Status.OK).entity(laneById).build();
     }
 
     @POST
-    @Path("/{bId}/rolls")
+    @Path("{id}/boards/{bId}/rolls")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createrRoll(@PathParam("bId") Long bId, LaneData roll) throws SQLException, NamingException {
+    @Produces(MediaType.TEXT_HTML)
+    public Response createrRoll(@PathParam("bId") Long bId, @Valid @ValidLane LaneData roll) throws SQLException, NamingException {
         roll.setBoardId(bId);
         LaneRepository.getInstance().createItem(roll);
-        return Response.status(201).build();
+        return Response.status(Response.Status.CREATED).entity("The lane has benn successfully cretead").build();
     }
 
     @PUT
-    @Path("/{bId}/rolls/{rId}")
+    @Path("{id}/boards/{bId}/rolls/{rId}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, LaneData roll) throws NamingException, SQLException {
         if (LaneRepository.getInstance().existItem(bId, rId)) {
             LaneRepository.getInstance().updateItem(roll, rId);
+            return Response.status(Response.Status.OK).entity("The lane has been fully updated").build();
         } else {
             LaneRepository.getInstance().createItem(roll);
+            return Response.status(Response.Status.CREATED).entity("The lane has benn successfully cretead").build();
         }
-        return Response.status(201).build();
     }
 
     @DELETE
-    @Path("/{bId}/rolls/{rId}")
-    public void removeRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws NamingException, SQLException {
+    @Path("{id}/boards/{bId}/rolls/{rId}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response removeRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws NamingException, SQLException {
         if (LaneRepository.getInstance().existItem(bId, rId)) {
             LaneRepository.getInstance().removeItem(rId);
+            return Response.status(Response.Status.NO_CONTENT).entity("Lane has been successfully removed").build();
         } else {
-            //throw some exception || return http status
+            return Response.status(Response.Status.NOT_FOUND).entity("Lane not exist in database").build();
         }
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}/cards")
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<CardData> getCards(@PathParam("rId") Long rId) throws SQLException, NamingException {
         return CardRepository.getInstance().getItems(rId);
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public CardData getCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws SQLException, NamingException {
-        return CardRepository.getInstance().getItem(rId, cId).get(0);
+    public Response getCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws SQLException, NamingException {
+        CardData cardById = CardRepository.getInstance().getItem(rId, cId).get(0);
+        return Response.status(Response.Status.OK).entity(cardById).build();
     }
 
     @POST
-    @Path("/{bId}/rolls/{rId}/cards")
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createrCard(@PathParam("rId") Long rId, CardData card) throws SQLException, NamingException {
+    @Produces(MediaType.TEXT_HTML)
+    public Response createrCard(@PathParam("rId") Long rId, @Valid @ValidCard CardData card) throws SQLException, NamingException {
         card.setRollId(rId);
         CardRepository.getInstance().createItem(card);
-        return Response.status(201).build();
+        return Response.status(Response.Status.CREATED).entity("The card has benn successfully cretead").build();
     }
 
     @PUT
-    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
     public Response updateCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId, CardData card) throws NamingException, SQLException {
         if (CardRepository.getInstance().existItem(rId, cId)) {
             CardRepository.getInstance().updateItem(card, cId);
+            return Response.status(Response.Status.OK).entity("The card has been fully updated").build();
         } else {
             CardRepository.getInstance().createItem(card);
+            return Response.status(Response.Status.CREATED).entity("The lane has benn successfully cretead").build();
         }
-        return Response.status(201).build();
     }
 
     @DELETE
-    @Path("/{bId}/rolls/{rId}/cards/{cId}")
-    public void removeCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws NamingException, SQLException {
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response removeCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws NamingException, SQLException {
         if (CardRepository.getInstance().existItem(rId, cId)) {
             CardRepository.getInstance().removeItem(cId);
+            return Response.status(Response.Status.NO_CONTENT).entity("Card has been successfully removed").build();
         } else {
-            //throw some exception || return http status
+            return Response.status(Response.Status.NOT_FOUND).entity("Card not exist in database").build();
         }
     }
 
