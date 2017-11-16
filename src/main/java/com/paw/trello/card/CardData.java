@@ -6,6 +6,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "CARD")
 public class CardData {
+	
+	public static enum Status {
+		CRREATED, ARCHIVED, DELETED
+	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +28,10 @@ public class CardData {
 
     @Column(name = "DESCRIPTION")
     private String description;
+	
+	@Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", length = 8)
+    private Status status;
 
     public CardData() {
     }
@@ -67,4 +75,12 @@ public class CardData {
     public void setDescription(String description) {
         this.description = description;
     }
+	
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 }

@@ -9,6 +9,10 @@ import java.util.List;
 @Entity
 @Table(name = "LANE")
 public class LaneData {
+	
+	public static enum Status {
+		CRREATED, ARCHIVED, DELETED
+	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +27,10 @@ public class LaneData {
 
     @Column(name = "BOARD_ID")
     private Long boardId;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", length = 8)
+    private Status status;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ROLL_ID", referencedColumnName = "ID")
@@ -77,4 +85,12 @@ public class LaneData {
     public void setLabel(String label) {
         this.label = label;
     }
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 }
