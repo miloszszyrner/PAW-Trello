@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class CardData {
 	
 	public static enum Status {
-		CRREATED, ARCHIVED, DELETED
+        CREATED, ARCHIVED, DELETED
 	}
 
     @Id

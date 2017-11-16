@@ -3,7 +3,6 @@ package com.paw.trello.roll;
 import com.paw.trello.card.CardData;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -11,7 +10,7 @@ import java.util.List;
 public class LaneData {
 	
 	public static enum Status {
-		CRREATED, ARCHIVED, DELETED
+        CREATED, ARCHIVED, DELETED
 	}
 
     @Id

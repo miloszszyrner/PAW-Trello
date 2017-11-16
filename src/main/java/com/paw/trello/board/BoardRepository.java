@@ -1,14 +1,15 @@
 package com.paw.trello.board;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 public class BoardRepository {
 
@@ -122,6 +123,7 @@ public class BoardRepository {
     public void createItem(BoardData data) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
+        data.setStatus(BoardData.Status.CREATED);
         em.persist(data);
         em.getTransaction().commit();
         em.close();
@@ -132,17 +134,18 @@ public class BoardRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         boardData = em.find(BoardData.class, id);
-        em.remove(boardData);
+        boardData.setStatus(BoardData.Status.DELETED);
+        em.persist(boardData);
         em.getTransaction().commit();
         em.close();
     }
 
-    public void updateItem(BoardData data, Long id) throws SQLException, NamingException {
+    public void updateItem(BoardData data, Long id) throws SQLException, NamingException, InvocationTargetException, IllegalAccessException {
         em = getEntityManager();
         em.getTransaction().begin();
-        BoardData rollData = em.find(BoardData.class, id);
-        rollData.setName(data.getName());
-        em.persist(rollData);
+        BoardData boardData = em.find(BoardData.class, id);
+        BeanUtils.copyProperties(boardData,data);
+        em.persist(boardData);
         em.getTransaction().commit();
         em.close();
     }

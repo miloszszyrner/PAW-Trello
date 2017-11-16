@@ -1,10 +1,13 @@
 package com.paw.trello.roll;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -62,6 +65,7 @@ public class LaneRepository {
     public void createItem(LaneData data) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
+        data.setStatus(LaneData.Status.CREATED);
         em.persist(data);
         em.getTransaction().commit();
         em.close();
@@ -72,16 +76,17 @@ public class LaneRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         laneData = em.find(LaneData.class, id);
-        em.remove(laneData);
+        laneData.setStatus(LaneData.Status.DELETED);
+        em.persist(laneData);
         em.getTransaction().commit();
         em.close();
     }
 
-    public void updateItem(LaneData data, Long id) throws SQLException, NamingException {
+    public void updateItem(LaneData data, Long id) throws SQLException, NamingException, InvocationTargetException, IllegalAccessException {
         em = getEntityManager();
         em.getTransaction().begin();
         LaneData laneData = em.find(LaneData.class, id);
-        laneData.setTitle(data.getTitle());
+        BeanUtils.copyProperties(laneData,data);
         em.persist(laneData);
         em.getTransaction().commit();
         em.close();

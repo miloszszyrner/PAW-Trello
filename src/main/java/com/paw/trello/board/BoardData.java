@@ -11,7 +11,7 @@ import java.util.List;
 public class BoardData {
 	
 	public static enum Status {
-		CRREATED, ARCHIVED, DELETED
+        CREATED, ARCHIVED, DELETED
 	}
 
     @Id

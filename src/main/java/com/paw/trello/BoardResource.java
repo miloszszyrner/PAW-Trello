@@ -16,6 +16,7 @@ import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class BoardResource {
     @Path("{id}/boards/{bId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response updateBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId, BoardData board) throws SQLException, NamingException {
+    public Response updateBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId, BoardData board) throws SQLException, NamingException, InvocationTargetException, IllegalAccessException {
         if (BoardRepository.getInstance().existItem(userId, bId)) {
             board.setUserId(userId);
             BoardRepository.getInstance().updateItem(board, bId);
@@ -124,7 +125,7 @@ public class BoardResource {
     @Path("{id}/boards/{bId}/rolls/{rId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, LaneData roll) throws NamingException, SQLException {
+    public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, LaneData roll) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
         if (LaneRepository.getInstance().existItem(bId, rId)) {
             LaneRepository.getInstance().updateItem(roll, rId);
             return Response.status(Response.Status.OK).entity("The lane has been fully updated").build();
@@ -175,7 +176,7 @@ public class BoardResource {
     @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response updateCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId, CardData card) throws NamingException, SQLException {
+    public Response updateCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId, CardData card) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
         if (CardRepository.getInstance().existItem(rId, cId)) {
             CardRepository.getInstance().updateItem(card, cId);
             return Response.status(Response.Status.OK).entity("The card has been fully updated").build();

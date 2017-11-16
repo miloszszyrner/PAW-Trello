@@ -1,13 +1,13 @@
 package com.paw.trello.card;
 
-import com.paw.trello.card.CardData;
+import org.apache.commons.beanutils.BeanUtils;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import javax.smartcardio.Card;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -65,6 +65,7 @@ public class CardRepository {
     public void createItem(CardData data) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
+        data.setStatus(CardData.Status.CREATED);
         em.persist(data);
         em.getTransaction().commit();
         em.close();
@@ -75,16 +76,17 @@ public class CardRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         cardData = em.find(CardData.class, id);
-        em.remove(cardData);
+        cardData.setStatus(CardData.Status.DELETED);
+        em.persist(cardData);
         em.getTransaction().commit();
         em.close();
     }
 
-    public void updateItem(CardData data, Long id) throws SQLException, NamingException {
+    public void updateItem(CardData data, Long id) throws SQLException, NamingException, InvocationTargetException, IllegalAccessException {
         em = getEntityManager();
         em.getTransaction().begin();
         CardData cardData = em.find(CardData.class, id);
-        cardData.setTitle(data.getTitle());
+        BeanUtils.copyProperties(cardData,data);
         em.persist(cardData);
         em.getTransaction().commit();
         em.close();
