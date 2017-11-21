@@ -1,4 +1,4 @@
-package com.paw.trello;
+package com.paw.trello.resources;
 
 import com.paw.trello.User.UserData;
 import com.paw.trello.User.UserRepository;
@@ -23,26 +23,6 @@ import java.util.List;
 @Path("/")
 public class BoardResource {
 
-    @POST
-    @Path("registraton")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerUser(@Valid @ValidUser UserData user) throws ValidationException,SQLException, NamingException {
-        UserRepository.getInstance().createItem(user);
-        return Response.status(Response.Status.CREATED).entity("The user has benn successfully cretead").build();
-    }
-
-    @POST
-    @Path("login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response loginUser(@Valid @ValidLoggingUser UserData user) throws ValidationException,SQLException, NamingException {
-        UserData loggedUser = UserRepository.getInstance().getByUsername(user.getUsername()).get(0);
-        if(loggedUser == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("User not exist in database").build();
-        }
-        if (loggedUser.getPassword().equals(user.getPassword()))
-            return Response.status(Response.Status.OK).entity(loggedUser).build();
-        return Response.status(Response.Status.FORBIDDEN).entity("Wrong password").build();
-    }
     @GET
     @Path("{id}/boards")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
