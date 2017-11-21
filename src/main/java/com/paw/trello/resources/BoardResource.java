@@ -12,7 +12,6 @@ import com.paw.trello.roll.LaneRepository;
 
 import javax.naming.NamingException;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

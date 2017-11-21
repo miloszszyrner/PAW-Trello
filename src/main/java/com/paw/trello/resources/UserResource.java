@@ -4,6 +4,7 @@ import com.paw.trello.User.UserData;
 import com.paw.trello.User.UserRepository;
 import com.paw.trello.annotations.ValidLoggingUser;
 import com.paw.trello.annotations.ValidUser;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.naming.NamingException;
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 
 @Path("user/")
 public class UserResource {
+
     @POST
     @Path("registration")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -33,7 +35,7 @@ public class UserResource {
         if(loggedUser == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("User not exist in database").build();
         }
-        if (loggedUser.getPassword().equals(user.getPassword()))
+        if (BCrypt.checkpw(user.getPassword(), loggedUser.getPassword()))
             return Response.status(Response.Status.OK).entity(loggedUser).build();
         return Response.status(Response.Status.FORBIDDEN).entity("Wrong password").build();
     }

@@ -1,5 +1,7 @@
 package com.paw.trello.User;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,6 +42,8 @@ public class UserRepository {
 
     private List<UserData> listOfUsers;
 
+    private static int workload = 12;
+
     public List<UserData> getItems() throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
@@ -61,6 +65,8 @@ public class UserRepository {
     public void createItem(UserData data) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
+        String salt = BCrypt.gensalt(workload);
+        data.setPassword(BCrypt.hashpw(data.getPassword(), salt));
         em.persist(data);
         em.getTransaction().commit();
         em.close();
