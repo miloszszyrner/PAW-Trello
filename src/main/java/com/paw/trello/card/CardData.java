@@ -1,7 +1,10 @@
 package com.paw.trello.card;
 
+import com.paw.trello.remark.RemarkData;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "CARD")
@@ -32,6 +35,10 @@ public class CardData {
 	@Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 8)
     private Status status;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "CARD_ID", referencedColumnName = "ID")
+    List<RemarkData> remarks;
 
     public CardData() {
     }
@@ -83,4 +90,12 @@ public class CardData {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+
+    public List<RemarkData> getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(List<RemarkData> remarks) {
+        this.remarks = remarks;
+    }
 }

@@ -13,7 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = ValidLoggingUser.Validator.class)
 public @interface ValidLoggingUser {
 
-    String message() default "{Invalid user: Check your username, password or passwordConfirmation}";
+    String message() default "{Invalid user: Check your username, password}";
 
     Class<?>[] groups() default {};
 
