@@ -18,7 +18,7 @@ import java.sql.SQLException;
 @Path("user/")
 public class UserResource {
     @POST
-    @Path("registraton")
+    @Path("registration")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerUser(@Valid @ValidUser UserData user) throws ValidationException,SQLException, NamingException {
         UserRepository.getInstance().createItem(user);
