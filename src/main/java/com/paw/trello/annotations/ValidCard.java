@@ -2,6 +2,7 @@ package com.paw.trello.annotations;
 
 import com.paw.trello.board.BoardData;
 import com.paw.trello.card.CardData;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -29,7 +30,7 @@ public @interface ValidCard {
         @Override
         public boolean isValid(final CardData card, final
         ConstraintValidatorContext constraintValidatorContext) {
-            if(card.getTitle() == null)
+            if(StringUtils.isEmpty(card.getTitle()))
                 return false;
             return true;
         }

@@ -7,6 +7,8 @@ import com.paw.trello.board.BoardData;
 import com.paw.trello.board.BoardRepository;
 import com.paw.trello.card.CardData;
 import com.paw.trello.card.CardRepository;
+import com.paw.trello.remark.RemarkData;
+import com.paw.trello.remark.RemarkRepository;
 import com.paw.trello.roll.LaneData;
 import com.paw.trello.roll.LaneRepository;
 
@@ -161,7 +163,7 @@ public class BoardResource {
             return Response.status(Response.Status.OK).entity("The card has been fully updated").build();
         } else {
             CardRepository.getInstance().createItem(card);
-            return Response.status(Response.Status.CREATED).entity("The lane has benn successfully cretead").build();
+            return Response.status(Response.Status.CREATED).entity("The card has benn successfully cretead").build();
         }
     }
 
@@ -177,4 +179,54 @@ public class BoardResource {
         }
     }
 
+    @GET
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}/remarks")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<RemarkData> getRemarks(@PathParam("cId") Long cId) throws SQLException, NamingException {
+        return RemarkRepository.getInstance().getItems(cId);
+    }
+
+    @GET
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}/remarks/{rmId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getRemark(@PathParam("cId") Long cId, @PathParam("rmId") Long rmId) throws SQLException, NamingException {
+        RemarkData remarkById = RemarkRepository.getInstance().getItem(cId, rmId).get(0);
+        return Response.status(Response.Status.OK).entity(remarkById).build();
+    }
+
+    @POST
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}/remarks")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public Response createRemark(@PathParam("cId") Long cId, @Valid @ValidRemark RemarkData remark) throws SQLException, NamingException {
+        remark.setCardId(cId);
+        RemarkRepository.getInstance().createItem(remark);
+        return Response.status(Response.Status.CREATED).entity("The remark has benn successfully cretead").build();
+    }
+
+    @PUT
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}/remarks/{rmId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    public Response updateRemark(@PathParam("cId") Long cId, @PathParam("rmId") Long rmId, RemarkData remark) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
+        if (RemarkRepository.getInstance().existItem(cId, rmId)) {
+            RemarkRepository.getInstance().updateItem(remark, cId);
+            return Response.status(Response.Status.OK).entity("The remark has been fully updated").build();
+        } else {
+            RemarkRepository.getInstance().createItem(remark);
+            return Response.status(Response.Status.CREATED).entity("The remark has benn successfully cretead").build();
+        }
+    }
+
+    @DELETE
+    @Path("{id}/boards/{bId}/rolls/{rId}/cards/{cId}/remarks/{rmId}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response removeRemark(@PathParam("cId") Long cId, @PathParam("rmId") Long rmId) throws NamingException, SQLException {
+        if (RemarkRepository.getInstance().existItem(cId, rmId)) {
+            RemarkRepository.getInstance().removeItem(rmId);
+            return Response.status(Response.Status.NO_CONTENT).entity("Remark has been successfully removed").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Remark not exist in database").build();
+        }
+    }
 }

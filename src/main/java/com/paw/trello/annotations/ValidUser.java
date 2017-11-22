@@ -1,6 +1,7 @@
 package com.paw.trello.annotations;
 
 import com.paw.trello.User.UserData;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -28,11 +29,11 @@ public @interface ValidUser {
         @Override
         public boolean isValid(final UserData user, final
         ConstraintValidatorContext constraintValidatorContext) {
-            if(user.getUsername() == null)
+            if(StringUtils.isEmpty(user.getUsername()))
                 return false;
-            if(user.getPassword() == null)
+            if(StringUtils.isEmpty(user.getPassword()))
                 return false;
-            if(user.getPasswordConfirmation() == null)
+            if(StringUtils.isEmpty(user.getPasswordConfirmation()))
                 return false;
             if(!user.getPassword().equals(user.getPasswordConfirmation()))
                 return false;

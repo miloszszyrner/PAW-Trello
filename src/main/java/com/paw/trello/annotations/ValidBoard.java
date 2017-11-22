@@ -1,6 +1,7 @@
 package com.paw.trello.annotations;
 
 import com.paw.trello.board.BoardData;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -28,7 +29,7 @@ public @interface ValidBoard {
         @Override
         public boolean isValid(final BoardData board, final
         ConstraintValidatorContext constraintValidatorContext) {
-            if(board.getName() == null)
+            if(StringUtils.isEmpty(board.getName()))
                 return false;
             return true;
         }

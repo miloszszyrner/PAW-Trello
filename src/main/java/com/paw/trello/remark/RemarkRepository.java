@@ -71,11 +71,10 @@ public class RemarkRepository {
     }
 
     public void removeItem(Long id) throws SQLException, NamingException {
-        RemarkData remarkData = new RemarkData();
         em = getEntityManager();
+        RemarkData remarkData = em.find(RemarkData.class, id);
         em.getTransaction().begin();
-        remarkData = em.find(RemarkData.class, id);
-        em.persist(remarkData);
+        em.remove(remarkData);
         em.getTransaction().commit();
         em.close();
     }

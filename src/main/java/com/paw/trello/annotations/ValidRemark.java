@@ -1,6 +1,6 @@
 package com.paw.trello.annotations;
 
-import com.paw.trello.roll.LaneData;
+import com.paw.trello.remark.RemarkData;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Constraint;
@@ -11,25 +11,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidLane.Validator.class)
-public @interface ValidLane {
+@Constraint(validatedBy = ValidRemark.Validator.class)
+public @interface ValidRemark{
 
-    String message() default "{Invalid board: Check your name}";
+    String message() default "{Invalid remark: Check your name}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    public class Validator implements ConstraintValidator<ValidLane, LaneData> {
+    public class Validator implements ConstraintValidator<ValidRemark, RemarkData> {
 
         @Override
-        public void initialize(final ValidLane hasId) {
+        public void initialize(final ValidRemark hasId) {
         }
 
         @Override
-        public boolean isValid(final LaneData lane, final
+        public boolean isValid(final RemarkData remark, final
         ConstraintValidatorContext constraintValidatorContext) {
-            if(StringUtils.isEmpty(lane.getTitle()))
+            if(StringUtils.isEmpty(remark.getContent()))
                 return false;
             return true;
         }
