@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "CARD")
 public class CardData {
-	
+
 	public static enum Status {
         CREATED, ARCHIVED, DELETED
 	}
@@ -24,14 +24,14 @@ public class CardData {
     private String title;
 
     @Column(name = "ROLL_ID", nullable = false)
-    private Long rollId;
+    private Long laneId;
 
     @Column(name ="LABEL")
     private String label;
 
     @Column(name = "DESCRIPTION")
     private String description;
-	
+
 	@Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 8)
     private Status status;
@@ -59,12 +59,12 @@ public class CardData {
         this.title = title;
     }
 
-    public Long getRollId() {
-        return rollId;
+    public Long getLaneId() {
+        return laneId;
     }
 
-    public void setRollId(Long rollId) {
-        this.rollId = rollId;
+    public void setLaneId(Long laneId) {
+        this.laneId = laneId;
     }
 
     public String getLabel() {
@@ -82,7 +82,7 @@ public class CardData {
     public void setDescription(String description) {
         this.description = description;
     }
-	
+
 	public Status getStatus() {
 		return status;
 	}

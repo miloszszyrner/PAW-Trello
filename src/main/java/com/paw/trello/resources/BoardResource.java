@@ -76,37 +76,37 @@ public class BoardResource {
     }
 
     @GET
-    @Path("/{bId}/rolls")
+    @Path("/{bId}/lanes")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<LaneData> getRolls(@PathParam("bId") Long bId) throws SQLException, NamingException {
+    public List<LaneData> getLanes(@PathParam("bId") Long bId) throws SQLException, NamingException {
         return LaneRepository.getInstance().getItems(bId);
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}")
+    @Path("/{bId}/lanes/{lId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws SQLException, NamingException {
-        LaneData laneById = LaneRepository.getInstance().getItem(bId, rId).get(0);
+    public Response getLanes(@PathParam("bId") Long bId, @PathParam("lId") Long lId) throws SQLException, NamingException {
+        LaneData laneById = LaneRepository.getInstance().getItem(bId, lId).get(0);
         return Response.status(Response.Status.OK).entity(laneById).build();
     }
 
     @POST
-    @Path("/{bId}/rolls")
+    @Path("/{bId}/lanes")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response createrRoll(@PathParam("bId") Long bId, @Valid @ValidLane LaneData roll) throws SQLException, NamingException {
+    public Response createrLane(@PathParam("bId") Long bId, @Valid @ValidLane LaneData roll) throws SQLException, NamingException {
         roll.setBoardId(bId);
         LaneRepository.getInstance().createItem(roll);
         return Response.status(Response.Status.CREATED).entity("The lane has benn successfully cretead").build();
     }
 
     @PUT
-    @Path("/{bId}/rolls/{rId}")
+    @Path("/{bId}/lanes/{lId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response updateRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId, LaneData roll) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
-        if (LaneRepository.getInstance().existItem(bId, rId)) {
-            LaneRepository.getInstance().updateItem(roll, rId);
+    public Response updateLane(@PathParam("bId") Long bId, @PathParam("lId") Long lId, LaneData roll) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
+        if (LaneRepository.getInstance().existItem(bId, lId)) {
+            LaneRepository.getInstance().updateItem(roll, lId);
             return Response.status(Response.Status.OK).entity("The lane has been fully updated").build();
         } else {
             LaneRepository.getInstance().createItem(roll);
@@ -115,11 +115,11 @@ public class BoardResource {
     }
 
     @DELETE
-    @Path("/{bId}/rolls/{rId}")
+    @Path("/{bId}/lanes/{lId}")
     @Produces(MediaType.TEXT_HTML)
-    public Response removeRoll(@PathParam("bId") Long bId, @PathParam("rId") Long rId) throws NamingException, SQLException {
-        if (LaneRepository.getInstance().existItem(bId, rId)) {
-            LaneRepository.getInstance().removeItem(rId);
+    public Response removeLane(@PathParam("bId") Long bId, @PathParam("lId") Long lId) throws NamingException, SQLException {
+        if (LaneRepository.getInstance().existItem(bId, lId)) {
+            LaneRepository.getInstance().removeItem(lId);
             return Response.status(Response.Status.NO_CONTENT).entity("Lane has been successfully removed").build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("Lane not exist in database").build();
@@ -127,36 +127,36 @@ public class BoardResource {
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}/cards")
+    @Path("/{bId}/lanes/{lId}/cards")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<CardData> getCards(@PathParam("rId") Long rId) throws SQLException, NamingException {
-        return CardRepository.getInstance().getItems(rId);
+    public List<CardData> getCards(@PathParam("lId") Long lId) throws SQLException, NamingException {
+        return CardRepository.getInstance().getItems(lId);
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws SQLException, NamingException {
-        CardData cardById = CardRepository.getInstance().getItem(rId, cId).get(0);
+    public Response getCard(@PathParam("lId") Long lId, @PathParam("cId") Long cId) throws SQLException, NamingException {
+        CardData cardById = CardRepository.getInstance().getItem(lId, cId).get(0);
         return Response.status(Response.Status.OK).entity(cardById).build();
     }
 
     @POST
-    @Path("/{bId}/rolls/{rId}/cards")
+    @Path("/{bId}/lanes/{lId}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response createrCard(@PathParam("rId") Long rId, @Valid @ValidCard CardData card) throws SQLException, NamingException {
-        card.setRollId(rId);
+    public Response createrCard(@PathParam("lId") Long lId, @Valid @ValidCard CardData card) throws SQLException, NamingException {
+        card.setRollId(lId);
         CardRepository.getInstance().createItem(card);
         return Response.status(Response.Status.CREATED).entity("The card has benn successfully cretead").build();
     }
 
     @PUT
-    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response updateCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId, CardData card) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
-        if (CardRepository.getInstance().existItem(rId, cId)) {
+    public Response updateCard(@PathParam("lId") Long lId, @PathParam("cId") Long cId, CardData card) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
+        if (CardRepository.getInstance().existItem(lId, cId)) {
             CardRepository.getInstance().updateItem(card, cId);
             return Response.status(Response.Status.OK).entity("The card has been fully updated").build();
         } else {
@@ -166,10 +166,10 @@ public class BoardResource {
     }
 
     @DELETE
-    @Path("/{bId}/rolls/{rId}/cards/{cId}")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}")
     @Produces(MediaType.TEXT_HTML)
-    public Response removeCard(@PathParam("rId") Long rId, @PathParam("cId") Long cId) throws NamingException, SQLException {
-        if (CardRepository.getInstance().existItem(rId, cId)) {
+    public Response removeCard(@PathParam("lId") Long lId, @PathParam("cId") Long cId) throws NamingException, SQLException {
+        if (CardRepository.getInstance().existItem(lId, cId)) {
             CardRepository.getInstance().removeItem(cId);
             return Response.status(Response.Status.NO_CONTENT).entity("Card has been successfully removed").build();
         } else {
@@ -178,14 +178,14 @@ public class BoardResource {
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}/cards/{cId}/remarks")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}/remarks")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<RemarkData> getRemarks(@PathParam("cId") Long cId) throws SQLException, NamingException {
         return RemarkRepository.getInstance().getItems(cId);
     }
 
     @GET
-    @Path("/{bId}/rolls/{rId}/cards/{cId}/remarks/{rmId}")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}/remarks/{rmId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getRemark(@PathParam("cId") Long cId, @PathParam("rmId") Long rmId) throws SQLException, NamingException {
         RemarkData remarkById = RemarkRepository.getInstance().getItem(cId, rmId).get(0);
@@ -193,7 +193,7 @@ public class BoardResource {
     }
 
     @POST
-    @Path("/{bId}/rolls/{rId}/cards/{cId}/remarks")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}/remarks")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public Response createRemark(@PathParam("cId") Long cId, @Valid @ValidRemark RemarkData remark) throws SQLException, NamingException {
@@ -203,7 +203,7 @@ public class BoardResource {
     }
 
     @PUT
-    @Path("/{bId}/rolls/{rId}/cards/{cId}/remarks/{rmId}")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}/remarks/{rmId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public Response updateRemark(@PathParam("cId") Long cId, @PathParam("rmId") Long rmId, RemarkData remark) throws NamingException, SQLException, InvocationTargetException, IllegalAccessException {
@@ -217,7 +217,7 @@ public class BoardResource {
     }
 
     @DELETE
-    @Path("/{bId}/rolls/{rId}/cards/{cId}/remarks/{rmId}")
+    @Path("/{bId}/lanes/{lId}/cards/{cId}/remarks/{rmId}")
     @Produces(MediaType.TEXT_HTML)
     public Response removeRemark(@PathParam("cId") Long cId, @PathParam("rmId") Long rmId) throws NamingException, SQLException {
         if (RemarkRepository.getInstance().existItem(cId, rmId)) {
