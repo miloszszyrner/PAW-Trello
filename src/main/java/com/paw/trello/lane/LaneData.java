@@ -1,4 +1,4 @@
-package com.paw.trello.roll;
+package com.paw.trello.lane;
 
 import com.paw.trello.card.CardData;
 
@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "LANE")
 public class LaneData {
-	
+
 	public static enum Status {
         CREATED, ARCHIVED, DELETED
 	}
@@ -26,7 +26,7 @@ public class LaneData {
 
     @Column(name = "BOARD_ID")
     private Long boardId;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 8)
     private Status status;

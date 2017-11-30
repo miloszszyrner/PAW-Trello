@@ -1,6 +1,5 @@
 package com.paw.trello.annotations;
 
-import com.paw.trello.board.BoardData;
 import com.paw.trello.card.CardData;
 import org.apache.commons.lang3.StringUtils;
 

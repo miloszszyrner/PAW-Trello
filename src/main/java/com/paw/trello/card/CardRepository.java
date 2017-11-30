@@ -43,8 +43,10 @@ public class CardRepository {
     public List<CardData> getItems(Long rollId) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.rollId = :rollId", CardData.class);
-        listOfCards = query.setParameter("rollId", rollId).getResultList();
+        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.rollId = :rollId and data.status = :status", CardData.class);
+        query.setParameter("rollId", rollId);
+        query.setParameter("status", CardData.Status.CREATED);
+        listOfCards = query.getResultList();
         em.getTransaction().commit();
         em.close();
         return listOfCards;
@@ -53,9 +55,10 @@ public class CardRepository {
     public List<CardData> getItem(Long rollId, Long cardId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.rollId = :rollId AND data.id = :cardId", CardData.class);
+        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.rollId = :rollId AND data.id = :cardId and data.status = :status", CardData.class);
         query.setParameter("cardId", cardId);
         query.setParameter("rollId", rollId);
+        query.setParameter("status", CardData.Status.CREATED);
         listOfCards = query.getResultList();
         em.getTransaction().commit();
         em.close();

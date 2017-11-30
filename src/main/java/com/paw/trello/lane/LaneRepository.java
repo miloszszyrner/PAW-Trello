@@ -1,4 +1,4 @@
-package com.paw.trello.roll;
+package com.paw.trello.lane;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -43,8 +43,10 @@ public class LaneRepository {
     public List<LaneData> getItems(Long boardId) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<LaneData> query = em.createQuery("SELECT data FROM LaneData data WHERE data.boardId = :boardId", LaneData.class);
-        listOfRolls = query.setParameter("boardId", boardId).getResultList();
+        TypedQuery<LaneData> query = em.createQuery("SELECT data FROM LaneData data WHERE data.boardId = :boardId and data.status = :status", LaneData.class);
+        query.setParameter("boardId", boardId);
+        query.setParameter("status", LaneData.Status.CREATED);
+        listOfRolls = query.getResultList();
         em.getTransaction().commit();
         em.close();
         return listOfRolls;
@@ -53,9 +55,10 @@ public class LaneRepository {
     public List<LaneData> getItem(Long boardId, Long rollId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<LaneData> query = em.createQuery("SELECT data FROM LaneData data WHERE data.boardId = :boardId AND data.id = :rollId", LaneData.class);
+        TypedQuery<LaneData> query = em.createQuery("SELECT data FROM LaneData data WHERE data.boardId = :boardId AND data.id = :rollId and data.status = :status", LaneData.class);
         query.setParameter("rollId", rollId);
         query.setParameter("boardId", boardId);
+        query.setParameter("status", LaneData.Status.CREATED);
         listOfRolls = query.getResultList();
         em.getTransaction().commit();
         em.close();

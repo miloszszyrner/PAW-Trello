@@ -1,6 +1,6 @@
 package com.paw.trello.board;
 
-import com.paw.trello.roll.LaneData;
+import com.paw.trello.lane.LaneData;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "BOARD")
 public class BoardData {
-	
+
 	public static enum Status {
         CREATED, ARCHIVED, DELETED
 	}
@@ -25,7 +25,7 @@ public class BoardData {
 
     @Column(name = "USER_ID", nullable = false)
     private Long userId;
-	
+
 	@Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 8)
     private Status status;
@@ -64,7 +64,7 @@ public class BoardData {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-	
+
 	public Status getStatus() {
 		return status;
 	}

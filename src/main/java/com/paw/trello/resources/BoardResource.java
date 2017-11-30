@@ -1,7 +1,5 @@
 package com.paw.trello.resources;
 
-import com.paw.trello.User.UserData;
-import com.paw.trello.User.UserRepository;
 import com.paw.trello.annotations.*;
 import com.paw.trello.board.BoardData;
 import com.paw.trello.board.BoardRepository;
@@ -9,8 +7,8 @@ import com.paw.trello.card.CardData;
 import com.paw.trello.card.CardRepository;
 import com.paw.trello.remark.RemarkData;
 import com.paw.trello.remark.RemarkRepository;
-import com.paw.trello.roll.LaneData;
-import com.paw.trello.roll.LaneRepository;
+import com.paw.trello.lane.LaneData;
+import com.paw.trello.lane.LaneRepository;
 
 import javax.naming.NamingException;
 import javax.validation.Valid;
@@ -146,7 +144,7 @@ public class BoardResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
     public Response createrCard(@PathParam("lId") Long lId, @Valid @ValidCard CardData card) throws SQLException, NamingException {
-        card.setRollId(lId);
+        card.setLaneId(lId);
         CardRepository.getInstance().createItem(card);
         return Response.status(Response.Status.CREATED).entity("The card has benn successfully cretead").build();
     }

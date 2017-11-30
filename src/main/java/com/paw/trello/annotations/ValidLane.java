@@ -1,6 +1,6 @@
 package com.paw.trello.annotations;
 
-import com.paw.trello.roll.LaneData;
+import com.paw.trello.lane.LaneData;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Constraint;
