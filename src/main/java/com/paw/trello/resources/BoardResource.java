@@ -5,6 +5,7 @@ import com.paw.trello.board.BoardData;
 import com.paw.trello.board.BoardRepository;
 import com.paw.trello.card.CardData;
 import com.paw.trello.card.CardRepository;
+import com.paw.trello.filter.JWTTokenNeeded;
 import com.paw.trello.remark.RemarkData;
 import com.paw.trello.remark.RemarkRepository;
 import com.paw.trello.lane.LaneData;
@@ -19,19 +20,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/{id}/boards")
+@Path("/boards")
+@JWTTokenNeeded
 public class BoardResource {
+
+    public static Long userId = null;
 
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<BoardData> getBoards(@PathParam("id") Long userId) throws SQLException, NamingException {
+    public List<BoardData> getBoards() throws SQLException, NamingException {
         return BoardRepository.getInstance().getItems(userId);
     }
 
     @GET
     @Path("/{bId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId) throws NamingException {
+    public Response getBoard(@PathParam("bId") Long bId) throws NamingException {
         BoardData boardById = BoardRepository.getInstance().getItem(userId,bId).get(0);
         return Response.status(Response.Status.OK).entity(boardById).build();
     }
@@ -39,7 +43,7 @@ public class BoardResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response createBoard(@PathParam("id") Long userId, @Valid @ValidBoard BoardData board) throws SQLException, NamingException {
+    public Response createBoard(@Valid @ValidBoard BoardData board) throws SQLException, NamingException {
         board.setUserId(userId);
         BoardRepository.getInstance().createItem(board);
         return Response.status(Response.Status.CREATED).entity("The board has benn successfully cretead").build();
@@ -49,7 +53,7 @@ public class BoardResource {
     @Path("/{bId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_HTML)
-    public Response updateBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId, BoardData board) throws SQLException, NamingException, InvocationTargetException, IllegalAccessException {
+    public Response updateBoard(@PathParam("bId") Long bId, BoardData board) throws SQLException, NamingException, InvocationTargetException, IllegalAccessException {
         if (BoardRepository.getInstance().existItem(userId, bId)) {
             board.setUserId(userId);
             BoardRepository.getInstance().updateItem(board, bId);
@@ -64,7 +68,7 @@ public class BoardResource {
     @DELETE
     @Path("/{bId}")
     @Produces(MediaType.TEXT_HTML)
-    public Response removeBoard(@PathParam("id") Long userId, @PathParam("bId") Long bId) throws NamingException, SQLException {
+    public Response removeBoard(@PathParam("bId") Long bId) throws NamingException, SQLException {
         if (BoardRepository.getInstance().existItem(userId, bId)) {
             BoardRepository.getInstance().removeItem(bId);
             return Response.status(Response.Status.NO_CONTENT).entity("Board has been successfully removed").build();

@@ -20,7 +20,7 @@ public @interface ValidRemark{
 
     Class<? extends Payload>[] payload() default {};
 
-    public class Validator implements ConstraintValidator<ValidRemark, RemarkData> {
+    class Validator implements ConstraintValidator<ValidRemark, RemarkData> {
 
         @Override
         public void initialize(final ValidRemark hasId) {
