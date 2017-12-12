@@ -49,7 +49,7 @@ public class UserResource {
         if (BCrypt.checkpw(user.getPassword(), loggedUser.getPassword())) {
             String token = issueToken(loggedUser.getId().toString());
 
-            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+            return Response.ok().header("Access-Control-Expose-Headers", AUTHORIZATION).header(AUTHORIZATION, "Bearer " + token).build();
         }
         return Response.status(Response.Status.FORBIDDEN).entity("Wrong password").build();
     }
