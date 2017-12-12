@@ -18,9 +18,11 @@ public class CardRepository {
         static final CardRepository INSTANCE = new CardRepository();
 
     }
+
     public static CardRepository getInstance() {
         return CardRepository.LazyHolder.INSTANCE;
     }
+
     private static EntityManager getEntityManager() throws NamingException {
         EntityManagerFactory emf = null;
         try {
@@ -40,11 +42,11 @@ public class CardRepository {
     private List<CardData> listOfCards;
 
 
-    public List<CardData> getItems(Long rollId) throws SQLException, NamingException {
+    public List<CardData> getItems(Long laneId) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.rollId = :rollId and data.status = :status", CardData.class);
-        query.setParameter("rollId", rollId);
+        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.laneId = :laneId and data.status = :status", CardData.class);
+        query.setParameter("laneId", laneId);
         query.setParameter("status", CardData.Status.CREATED);
         listOfCards = query.getResultList();
         em.getTransaction().commit();
@@ -52,12 +54,12 @@ public class CardRepository {
         return listOfCards;
     }
 
-    public List<CardData> getItem(Long rollId, Long cardId) throws NamingException {
+    public List<CardData> getItem(Long laneId, Long cardId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.rollId = :rollId AND data.id = :cardId and data.status = :status", CardData.class);
+        TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.laneId = :laneId AND data.id = :cardId and data.status = :status", CardData.class);
         query.setParameter("cardId", cardId);
-        query.setParameter("rollId", rollId);
+        query.setParameter("laneId", laneId);
         query.setParameter("status", CardData.Status.CREATED);
         listOfCards = query.getResultList();
         em.getTransaction().commit();
@@ -89,14 +91,14 @@ public class CardRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         CardData cardData = em.find(CardData.class, id);
-        BeanUtils.copyProperties(cardData,data);
+        BeanUtils.copyProperties(cardData, data);
         em.persist(cardData);
         em.getTransaction().commit();
         em.close();
     }
 
-    public Boolean existItem(Long bId, Long rId) throws NamingException {
-        if(getItem(bId, rId) == null || getItem(bId, rId).isEmpty()){
+    public Boolean existItem(Long lId, Long cId) throws NamingException {
+        if (getItem(lId, cId) == null || getItem(lId, cId).isEmpty()) {
             return false;
         }
         return true;

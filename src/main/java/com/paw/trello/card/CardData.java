@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name = "CARD")
 public class CardData {
 
-	public static enum Status {
+	public enum Status {
         CREATED, ARCHIVED, DELETED
 	}
 
@@ -39,6 +39,10 @@ public class CardData {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CARD_ID", referencedColumnName = "ID")
     List<RemarkData> remarks;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "CARD_ID", referencedColumnName = "ID")
+    List<LabelData> labels;
 
     public CardData() {
     }
@@ -97,5 +101,13 @@ public class CardData {
 
     public void setRemarks(List<RemarkData> remarks) {
         this.remarks = remarks;
+    }
+
+    public List<LabelData> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<LabelData> labels) {
+        this.labels = labels;
     }
 }
