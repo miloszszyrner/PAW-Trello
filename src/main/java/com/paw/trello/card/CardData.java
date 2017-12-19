@@ -1,5 +1,6 @@
 package com.paw.trello.card;
 
+import com.paw.trello.board.BoardData;
 import com.paw.trello.remark.RemarkData;
 
 import javax.persistence.*;
@@ -9,10 +10,6 @@ import java.util.List;
 @Entity
 @Table(name = "CARD")
 public class CardData {
-
-	public enum Status {
-        CREATED, ARCHIVED, DELETED
-	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,15 +31,15 @@ public class CardData {
 
 	@Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 8)
-    private Status status;
+    private BoardData.Status status;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CARD_ID", referencedColumnName = "ID")
     List<RemarkData> remarks;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    /*@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CARD_ID", referencedColumnName = "ID")
-    List<LabelData> labels;
+    List<LabelData> labels;*/
 
     public CardData() {
     }
@@ -87,11 +84,11 @@ public class CardData {
         this.description = description;
     }
 
-	public Status getStatus() {
+	public BoardData.Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(BoardData.Status status) {
 		this.status = status;
 	}
 
@@ -103,11 +100,11 @@ public class CardData {
         this.remarks = remarks;
     }
 
-    public List<LabelData> getLabels() {
+   /* public List<LabelData> getLabels() {
         return labels;
     }
 
     public void setLabels(List<LabelData> labels) {
         this.labels = labels;
-    }
+    }*/
 }

@@ -1,6 +1,8 @@
 package com.paw.trello.remark;
 
+import com.paw.trello.util.BeanUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -18,9 +20,11 @@ public class RemarkRepository {
         static final RemarkRepository INSTANCE = new RemarkRepository();
 
     }
+
     public static RemarkRepository getInstance() {
         return RemarkRepository.LazyHolder.INSTANCE;
     }
+
     private static EntityManager getEntityManager() throws NamingException {
         EntityManagerFactory emf = null;
         try {
@@ -83,16 +87,17 @@ public class RemarkRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         RemarkData remarkData = em.find(RemarkData.class, id);
-        BeanUtils.copyProperties(remarkData,data);
+        BeanUtil.getInstance().copyProperties(data, remarkData);
         em.persist(remarkData);
         em.getTransaction().commit();
         em.close();
     }
 
     public Boolean existItem(Long cId, Long rId) throws NamingException {
-        if(getItem(cId, rId) == null || getItem(cId, rId).isEmpty()){
+        if (getItem(cId, rId) == null || getItem(cId, rId).isEmpty()) {
             return false;
         }
         return true;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.paw.trello.lane;
 
+import com.paw.trello.board.BoardData;
 import com.paw.trello.card.CardData;
 
 import javax.persistence.*;
@@ -8,10 +9,6 @@ import java.util.List;
 @Entity
 @Table(name = "LANE")
 public class LaneData {
-
-	public static enum Status {
-        CREATED, ARCHIVED, DELETED
-	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +26,7 @@ public class LaneData {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 8)
-    private Status status;
+    private BoardData.Status status;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ROLL_ID", referencedColumnName = "ID")
@@ -85,11 +82,11 @@ public class LaneData {
         this.label = label;
     }
 
-	public Status getStatus() {
+	public BoardData.Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(BoardData.Status status) {
 		this.status = status;
 	}
 }

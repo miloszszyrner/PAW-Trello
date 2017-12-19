@@ -1,15 +1,22 @@
 package com.paw.trello.card;
 
+import com.paw.trello.board.BoardData;
+import com.paw.trello.util.BeanUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardRepository {
 
@@ -47,7 +54,7 @@ public class CardRepository {
         em.getTransaction().begin();
         TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.laneId = :laneId and data.status = :status", CardData.class);
         query.setParameter("laneId", laneId);
-        query.setParameter("status", CardData.Status.CREATED);
+        query.setParameter("status", BoardData.Status.CREATED);
         listOfCards = query.getResultList();
         em.getTransaction().commit();
         em.close();
@@ -60,7 +67,7 @@ public class CardRepository {
         TypedQuery<CardData> query = em.createQuery("SELECT data FROM CardData data WHERE data.laneId = :laneId AND data.id = :cardId and data.status = :status", CardData.class);
         query.setParameter("cardId", cardId);
         query.setParameter("laneId", laneId);
-        query.setParameter("status", CardData.Status.CREATED);
+        query.setParameter("status", BoardData.Status.CREATED);
         listOfCards = query.getResultList();
         em.getTransaction().commit();
         em.close();
@@ -70,7 +77,7 @@ public class CardRepository {
     public void createItem(CardData data) throws SQLException, NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        data.setStatus(CardData.Status.CREATED);
+        data.setStatus(BoardData.Status.CREATED);
         em.persist(data);
         em.getTransaction().commit();
         em.close();
@@ -81,7 +88,7 @@ public class CardRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         cardData = em.find(CardData.class, id);
-        cardData.setStatus(CardData.Status.DELETED);
+        cardData.setStatus(BoardData.Status.DELETED);
         em.persist(cardData);
         em.getTransaction().commit();
         em.close();
@@ -91,7 +98,7 @@ public class CardRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         CardData cardData = em.find(CardData.class, id);
-        BeanUtils.copyProperties(cardData, data);
+        BeanUtil.getInstance().copyProperties(data, cardData);
         em.persist(cardData);
         em.getTransaction().commit();
         em.close();

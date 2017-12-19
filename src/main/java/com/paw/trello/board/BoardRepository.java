@@ -1,6 +1,8 @@
 package com.paw.trello.board;
 
+import com.paw.trello.util.BeanUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -17,6 +19,7 @@ public class BoardRepository {
 
         static final BoardRepository INSTANCE = new BoardRepository();
     }
+
     public static BoardRepository getInstance() {
         return LazyHolder.INSTANCE;
     }
@@ -35,69 +38,9 @@ public class BoardRepository {
         return emf.createEntityManager();
     }
 
-    /*@Override
-    public List<BoardData> getItems() {
-        List<BoardData> boards = new ArrayList<>();
-        String queryString = "SELECT * FROM BOARD";
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(queryString);
-            while(resultSet.next()) {
-                BoardData board = new BoardData();
-                board.setId(resultSet.getLong(1));
-                board.setName(resultSet.getString(2));
-                boards.add(board);
-            }
-        } catch (SQLException e) {
-            e.prLongStackTrace();
-        }
-        return boards;
-    }
-
-    @Override
-    public BoardData getItem(Long id) {
-        BoardData board = new BoardData();
-        String queryString = "SELECT * FROM BOARD WHERE ID = ?";
-        try {
-            PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
-                board.setId(resultSet.getLong(1));
-                board.setName(resultSet.getString(2));
-            }
-        } catch (SQLException e) {
-            e.prLongStackTrace();
-        }
-        return board;
-    }
-
-    @Override
-    public void createItem(BoardData item) {
-        String queryString = "INSERT LongO BOARD (NAME) values (?)";
-        try {
-            PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setString(1, item.getName());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.prLongStackTrace();
-        }
-    }
-
-    @Override
-    public void updateItem(BoardData item) {
-        String queryString = "UPDATE BOARD SET NAME = ? WHERE ID = ?";
-        try {
-            PreparedStatement statement = connection.prepareStatement(queryString);
-            statement.setString(1,item.getName());
-            statement.setLong(2,item.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.prLongStackTrace();
-        }
-    }*/
     private EntityManager em;
     private List<BoardData> listOfBoards;
+
     public List<BoardData> getItems(Long userId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
@@ -146,14 +89,14 @@ public class BoardRepository {
         em = getEntityManager();
         em.getTransaction().begin();
         BoardData boardData = em.find(BoardData.class, id);
-        BeanUtils.copyProperties(boardData,data);
+        BeanUtil.getInstance().copyProperties(data, boardData);
         em.persist(boardData);
         em.getTransaction().commit();
         em.close();
     }
 
     public boolean existItem(Long userId, Long bId) throws NamingException {
-        if(getItem(userId, bId) == null || getItem(userId, bId).isEmpty()){
+        if (getItem(userId, bId) == null || getItem(userId, bId).isEmpty()) {
             return false;
         }
         return true;
