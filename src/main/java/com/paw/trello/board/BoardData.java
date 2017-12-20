@@ -10,9 +10,13 @@ import java.util.List;
 @Table(name = "BOARD")
 public class BoardData {
 
-	public static enum Status {
+	public enum Status {
         CREATED, ARCHIVED, DELETED
 	}
+
+	public enum Visibility {
+	    PRIVATE, PUBLIC
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +37,10 @@ public class BoardData {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "BOARD_ID", referencedColumnName = "ID")
     List<LaneData> lanes;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "VISIBILITY", length = 8)
+    private Visibility visibility;
 
     public BoardData(Long id, String name) {
         this.id = id;
@@ -79,5 +87,13 @@ public class BoardData {
 
     public void setLanes(List<LaneData> lanes) {
         this.lanes = lanes;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
 }

@@ -44,9 +44,10 @@ public class BoardRepository {
     public List<BoardData> getItems(Long userId) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<BoardData> query = em.createQuery("SELECT data FROM BoardData data where data.userId = :userId and data.status = :status", BoardData.class);
+        TypedQuery<BoardData> query = em.createQuery("SELECT data FROM BoardData data where (data.userId = :userId and data.status = :status) OR data.visibility = :visibility", BoardData.class);
         query.setParameter("userId", userId);
         query.setParameter("status", BoardData.Status.CREATED);
+        query.setParameter("visibility", BoardData.Visibility.PUBLIC);
         listOfBoards = query.getResultList();
         em.getTransaction().commit();
         em.close();
@@ -56,10 +57,11 @@ public class BoardRepository {
     public List<BoardData> getItem(Long userId, Long id) throws NamingException {
         em = getEntityManager();
         em.getTransaction().begin();
-        TypedQuery<BoardData> query = em.createQuery("SELECT data FROM BoardData data where data.userId = :userId and data.id = :id and data.status = :status", BoardData.class);
+        TypedQuery<BoardData> query = em.createQuery("SELECT data FROM BoardData data where ((data.userId = :userId and data.status = :status) OR data.visibility = :visibility) and data.id = :id", BoardData.class);
         query.setParameter("userId", userId);
         query.setParameter("id", id);
         query.setParameter("status", BoardData.Status.CREATED);
+        query.setParameter("visibility", BoardData.Visibility.PUBLIC);
         listOfBoards = query.getResultList();
         em.close();
         return listOfBoards;
